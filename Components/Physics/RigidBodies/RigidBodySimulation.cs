@@ -11,7 +11,7 @@ namespace FrooxEngine
         public event Action<float3> OnApplyPos;
         public event Action<floatQ> OnApplyRot;
         public event Action<float3> OnApplyScale;
-        public event Action OnReset;
+        public event Action OnStop;
         public event Action OnResetCenterOfMass;
         public event Action OnResetInteriaTensor;
 
@@ -33,8 +33,8 @@ namespace FrooxEngine
         public readonly Sync<float> Speed;
         public readonly Sync<float3> Velocity;
         public readonly Sync<float3> AngularVelocity;
-        public readonly Sync<float3> InteriaTensor;
-        public readonly Sync<floatQ> InteriaTensorRotation;
+        public readonly Sync<float3> IntertiaTensor;
+        public readonly Sync<floatQ> IntertiaTensorRotation;
         public readonly Sync<float3> LocalCenterOfMass;
         public readonly Sync<float3> GlobalCenterOfMass;
 
@@ -87,7 +87,7 @@ namespace FrooxEngine
         }
 
         [ImpulseTarget]
-        public void Reset() { OnReset?.Invoke(); }
+        public void Stop() { OnStop?.Invoke(); }
 
 
         [ImpulseTarget]
@@ -114,7 +114,7 @@ namespace FrooxEngine
         public void BuildInspectorUI(UIBuilder ui)
         {
             WorkerInspector.BuildInspectorUI(this, ui);
-            ui.Button("Stop Simulation".AsLocaleKey()).SetUpActionTrigger(Reset);
+            ui.Button("Stop Simulation".AsLocaleKey()).SetUpActionTrigger(Stop);
             ui.Button("Reset Center Of Mass".AsLocaleKey()).SetUpActionTrigger(ResetCenterOfMass);
             ui.Button("Reset Interia Tensor".AsLocaleKey()).SetUpActionTrigger(ResetInteriaTensor);
         }

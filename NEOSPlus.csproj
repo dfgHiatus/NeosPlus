@@ -211,6 +211,16 @@
     <Compile Include="Logix\Math\Random\RandomInt3.cs" />
     <Compile Include="Logix\Math\Random\RandomInt4.cs" />
     <Compile Include="Logix\Network\HTTPRequest.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\ResetCenterOfMass.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\ResetCenterOfMassInChildren.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\ResetCenterOfMassOnSlot.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\ResetInertiaTensor.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\ResetInertiaTensorsInChildren.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\ResetIntertiaTensorOnSlot.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\RigidBodyData.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\StopRigidBody.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\StopRigidBodiesInChildren.cs" />
+    <Compile Include="Logix\Physics\RigidBodies\StopRigidBodyOnSlot.cs" />
     <Compile Include="Logix\Slots\CreateEmptySlot.cs" />
     <Compile Include="Logix\Json\JsonAddToObject.cs" />
     <Compile Include="Logix\Json\JsonGetFromObject.cs" />

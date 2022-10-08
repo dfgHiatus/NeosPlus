@@ -25,7 +25,7 @@ namespace NEOSPlus
             Owner.OnApplyPos += OnPositionChange;
             Owner.OnApplyRot += OnRotationChange;
             Owner.OnApplyScale += OnScaleChange;
-            Owner.OnReset += OnReset;
+            Owner.OnStop += OnStop;
             SetupCollider();
 
             // RigidBody = attachedGameObject.AddComponent<UnityEngine.Rigidbody>();
@@ -145,7 +145,7 @@ namespace NEOSPlus
             }
         }
 
-        public void OnReset()
+        public void OnStop()
         {
             var reg = RigidBody.isKinematic;
 
@@ -225,8 +225,8 @@ namespace NEOSPlus
                 Owner.Speed.Value = RigidBody.velocity.magnitude;
                 Owner.Velocity.Value = RigidBody.velocity.ToNeos();
                 Owner.AngularVelocity.Value = RigidBody.angularVelocity.ToNeos();
-                Owner.InteriaTensor.Value = RigidBody.inertiaTensor.ToNeos();
-                Owner.InteriaTensorRotation.Value = RigidBody.inertiaTensorRotation.ToNeos();
+                Owner.IntertiaTensor.Value = RigidBody.inertiaTensor.ToNeos();
+                Owner.IntertiaTensorRotation.Value = RigidBody.inertiaTensorRotation.ToNeos();
                 Owner.LocalCenterOfMass.Value = RigidBody.centerOfMass.ToNeos();
                 Owner.GlobalCenterOfMass.Value = RigidBody.worldCenterOfMass.ToNeos();
             }
