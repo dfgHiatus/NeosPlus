@@ -59,9 +59,11 @@
     </PostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AssimpNet, Version=3.2.0.0, Culture=neutral, PublicKeyToken=0d51b391f59f42a6" />
     <Reference Include="BaseX">
       <HintPath>$(NeosPath)Neos_Data/Managed/BaseX.dll</HintPath>
     </Reference>
+    <Reference Include="BepuUtilities, Version=2.4.0.1, Culture=neutral, PublicKeyToken=a595ef937c270ac9" />
     <Reference Include="CodeX">
       <HintPath>$(NeosPath)Neos_Data/Managed/CodeX.dll</HintPath>
     </Reference>
@@ -117,13 +119,18 @@
     <Compile Include="Components\Collections\ValueFieldList.cs" />
     <Compile Include="Components\Physics\Cloth\ClothCoefficent.cs" />
     <Compile Include="Components\Physics\Cloth\ClothCollider.cs" />
-    <Compile Include="Components\Physics\Cloth\UnityBetterComponentConnector.cs" />
     <Compile Include="Components\Physics\Cloth\ClothCapsuleCollider.cs" />
     <Compile Include="Components\Physics\Cloth\ClothCapsuleConnector.cs" />
     <Compile Include="Components\Physics\Cloth\ClothConnector.cs" />
     <Compile Include="Components\Physics\Cloth\ClothSimulation.cs" />
     <Compile Include="Components\Physics\Cloth\ClothSphereCollider.cs" />
     <Compile Include="Components\Physics\Cloth\ClothSphereConnector.cs" />
+    <Compile Include="Components\Physics\RigidBodies\IRigidBodyUpdatable.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\Box\RigidBox.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\Box\RigidBoxColliderConnector.cs" />
+    <Compile Include="Components\Physics\RigidBodies\RigidBodyConnector.cs" />
+    <Compile Include="Components\Physics\RigidBodies\RigidBodySimulation.cs" />
+    <Compile Include="Components\Physics\UnityBetterComponentConnector.cs" />
     <Compile Include="Components\Utility\GrabberSimulator.cs" />
     <Compile Include="Components\Wizards\MeshColliderManagementTools.cs" />
     <Compile Include="Components\Wizards\LODWizard.cs" />
@@ -253,4 +260,7 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetDir)\$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\NeosVR\Libraries"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
