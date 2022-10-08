@@ -130,6 +130,12 @@
     <Compile Include="Components\Physics\RigidBodies\UnityColliders\Box\RigidBoxColliderConnector.cs" />
     <Compile Include="Components\Physics\RigidBodies\RigidBodyConnector.cs" />
     <Compile Include="Components\Physics\RigidBodies\RigidBodySimulation.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\Capsule\RigidCapsule.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\Capsule\RigidCapsuleColliderConnector.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\ConvexHull\RigidConvexHull.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\ConvexHull\RigidConvexHullColliderConnector.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\Sphere\RigidSphere.cs" />
+    <Compile Include="Components\Physics\RigidBodies\UnityColliders\Sphere\RigidSphereColliderConnector.cs" />
     <Compile Include="Components\Physics\UnityBetterComponentConnector.cs" />
     <Compile Include="Components\Utility\GrabberSimulator.cs" />
     <Compile Include="Components\Wizards\MeshColliderManagementTools.cs" />
@@ -259,6 +265,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(TargetDir)\$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\NeosVR\Libraries"</PostBuildEvent>

@@ -12,7 +12,9 @@ namespace FrooxEngine
         public event Action<floatQ> OnApplyRot;
         public event Action<float3> OnApplyScale;
         public event Action OnReset;
-        
+        public event Action OnResetCenterOfMass;
+        public event Action OnResetInteriaTensor;
+
         public readonly Sync<float> Mass;
         public readonly Sync<float> Drag;
         public readonly Sync<float> AngularDrag;
@@ -28,17 +30,17 @@ namespace FrooxEngine
         public readonly Sync<bool> FreezeRotationY;
         public readonly Sync<bool> FreezeRotationZ;
 
+        public readonly Sync<float> Speed;
+        public readonly Sync<float3> Velocity;
+        public readonly Sync<float3> AngularVelocity;
+        public readonly Sync<float3> InteriaTensor;
+        public readonly Sync<floatQ> InteriaTensorRotation;
+        public readonly Sync<float3> LocalCenterOfMass;
+        public readonly Sync<float3> GlobalCenterOfMass;
+
         public readonly FieldDrive<float3> PositionDrive;
         public readonly FieldDrive<floatQ> RotationDrive;
         public readonly FieldDrive<float3> ScaleDrive;
-
-        //public readonly Sync<float> Speed;
-        //public readonly Sync<float3> Velocity;
-        //public readonly Sync<float3> AngularVelocity;
-        //public readonly Sync<float3> IntertiaTensor;
-        //public readonly Sync<float3> IntertialTensorRotation;
-        //public readonly Sync<float3> LocalCenterOfMass;
-        //public readonly Sync<float3> WorldCenterOfMass;
 
         protected override void OnAttach()
         {
@@ -86,7 +88,15 @@ namespace FrooxEngine
 
         [ImpulseTarget]
         public void Reset() { OnReset?.Invoke(); }
-        
+
+
+        [ImpulseTarget]
+        public void ResetCenterOfMass() { OnResetCenterOfMass?.Invoke(); }
+
+
+        [ImpulseTarget]
+        public void ResetInteriaTensor() { OnResetInteriaTensor?.Invoke(); }
+
         public enum Interpolation
         {
             None,
@@ -105,6 +115,8 @@ namespace FrooxEngine
         {
             WorkerInspector.BuildInspectorUI(this, ui);
             ui.Button("Stop Simulation".AsLocaleKey()).SetUpActionTrigger(Reset);
+            ui.Button("Reset Center Of Mass".AsLocaleKey()).SetUpActionTrigger(ResetCenterOfMass);
+            ui.Button("Reset Interia Tensor".AsLocaleKey()).SetUpActionTrigger(ResetInteriaTensor);
         }
 
         protected override void OnCommonUpdate()

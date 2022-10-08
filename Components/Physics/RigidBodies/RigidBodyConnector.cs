@@ -184,6 +184,16 @@ namespace NEOSPlus
             base.Destroy(destroyingWorld);
         }
 
+        public void ResetCenterOfMass()
+        {
+            RigidBody.ResetCenterOfMass();
+        }
+
+        public void ResetInteriaTensor()
+        {
+            RigidBody.ResetCenterOfMass();
+        }
+
         public void Update()
         {
             if (RigidBody != null)
@@ -195,7 +205,7 @@ namespace NEOSPlus
                         targetPosition.DirectValue = RigidBody.gameObject.transform.position.ToNeos();
                     }
                 }
-                
+
                 if (Owner.RotationDrive.Target is Sync<floatQ> targetRotation)
                 {
                     if (!targetRotation.WasChanged)
@@ -211,6 +221,14 @@ namespace NEOSPlus
                         targetScale.DirectValue = RigidBody.gameObject.transform.localScale.ToNeos();
                     }
                 }
+
+                Owner.Speed.Value = RigidBody.velocity.magnitude;
+                Owner.Velocity.Value = RigidBody.velocity.ToNeos();
+                Owner.AngularVelocity.Value = RigidBody.angularVelocity.ToNeos();
+                Owner.InteriaTensor.Value = RigidBody.inertiaTensor.ToNeos();
+                Owner.InteriaTensorRotation.Value = RigidBody.inertiaTensorRotation.ToNeos();
+                Owner.LocalCenterOfMass.Value = RigidBody.centerOfMass.ToNeos();
+                Owner.GlobalCenterOfMass.Value = RigidBody.worldCenterOfMass.ToNeos();
             }
         }
     }
