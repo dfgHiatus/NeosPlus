@@ -9,7 +9,8 @@ namespace NEOSPlus
         private UnityEngine.CapsuleCollider CapsuleCollider;
         public override void SetupCollider()
         {
-            CapsuleCollider = go.AddComponent<UnityEngine.CapsuleCollider>();
+            CapsuleCollider = Gameobject.AddComponent<UnityEngine.CapsuleCollider>();
+            CapsuleCollider.material = PhysicsMaterial;
         }
 
         public override void Initialize()

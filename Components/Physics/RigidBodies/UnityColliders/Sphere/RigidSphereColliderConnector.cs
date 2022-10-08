@@ -9,7 +9,8 @@ namespace NEOSPlus
         private UnityEngine.SphereCollider SphereCollider;
         public override void SetupCollider()
         {
-            SphereCollider = go.AddComponent<UnityEngine.SphereCollider>();
+            SphereCollider = Gameobject.AddComponent<UnityEngine.SphereCollider>();
+            SphereCollider.material = PhysicsMaterial;
         }
 
         public override void Initialize()

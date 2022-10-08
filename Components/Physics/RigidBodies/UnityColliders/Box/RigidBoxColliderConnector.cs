@@ -9,7 +9,8 @@ namespace NEOSPlus
         private UnityEngine.BoxCollider BoxCollider;
         public override void SetupCollider()
         {
-            BoxCollider = go.AddComponent<UnityEngine.BoxCollider>();
+            BoxCollider = Gameobject.AddComponent<UnityEngine.BoxCollider>();
+            BoxCollider.material = PhysicsMaterial;
         }
 
         public override void Initialize()

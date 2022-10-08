@@ -7,7 +7,8 @@ namespace NEOSPlus
 {
     public abstract class RigidBodyConnector<T> : ComponentConnector<T>, IRigidBodyUpdatable where T : RigidBody
     {
-        protected GameObject go;
+        protected GameObject Gameobject;
+        protected PhysicMaterial PhysicsMaterial;
         private UnityEngine.Rigidbody RigidBody;
 
         public abstract void SetupCollider();
@@ -15,9 +16,10 @@ namespace NEOSPlus
         public override void Initialize()
         {
             base.Initialize();
-            go = new GameObject("");
-            go.transform.SetParent((World.Connector as WorldConnector).WorldRoot.transform);
-            RigidBody = go.AddComponent<UnityEngine.Rigidbody>();
+            Gameobject = new GameObject("");
+            Gameobject.transform.SetParent((World.Connector as WorldConnector).WorldRoot.transform);
+            RigidBody = Gameobject.AddComponent<UnityEngine.Rigidbody>();
+            PhysicsMaterial = new PhysicMaterial();
             OnPositionChange(Owner.PositionDrive.Target.Value);
             OnRotationChange(Owner.RotationDrive.Target.Value);
             OnScaleChange(Owner.ScaleDrive.Target.Value);
@@ -27,35 +29,38 @@ namespace NEOSPlus
             Owner.OnApplyScale += OnScaleChange;
             Owner.OnStop += OnStop;
             SetupCollider();
-
-            // RigidBody = attachedGameObject.AddComponent<UnityEngine.Rigidbody>();
         }
 
         public override void ApplyChanges()
         {
+            if (Owner.SleepThreshold.WasChanged)
+            {
+                RigidBody.sleepThreshold = Owner.SleepThreshold.Value;
+            }
+            
             if (Owner.Mass.WasChanged)
             {
-                RigidBody.mass = Owner.Mass;
+                RigidBody.mass = Owner.Mass.Value;
             }
 
             if (Owner.Drag.WasChanged)
             {
-                RigidBody.drag = Owner.Drag;
+                RigidBody.drag = Owner.Drag.Value;
             }
 
             if (Owner.AngularDrag.WasChanged)
             {
-                RigidBody.angularDrag = Owner.AngularDrag;
+                RigidBody.angularDrag = Owner.AngularDrag.Value;
             }
 
             if (Owner.IsKinematic.WasChanged)
             {
-                RigidBody.isKinematic = Owner.IsKinematic;
+                RigidBody.isKinematic = Owner.IsKinematic.Value;
             }
 
             if (Owner.UseGravity.WasChanged)
             {
-                RigidBody.useGravity = Owner.UseGravity;
+                RigidBody.useGravity = Owner.UseGravity.Value;
             }
 
             if (Owner.InterpolationType.WasChanged)
@@ -143,6 +148,59 @@ namespace NEOSPlus
                     RigidBody.constraints = RigidBody.constraints | UnityEngine.RigidbodyConstraints.FreezeRotationZ;
                 }
             }
+
+            if (Owner.DynamicFriction.WasChanged)
+            {
+                PhysicsMaterial.dynamicFriction = Owner.DynamicFriction.Value;
+            }
+
+            if (Owner.StaticFriction.WasChanged)
+            {
+                PhysicsMaterial.staticFriction = Owner.StaticFriction.Value;
+            }
+
+            if (Owner.Bounciness.WasChanged)
+            {
+                PhysicsMaterial.bounciness = Owner.Bounciness.Value;
+            }
+
+            if (Owner.FrictionCombine.WasChanged)
+            {
+                switch (Owner.FrictionCombine.Value)
+                {
+                    case FrooxEngine.RigidBody.Combine.Average:
+                        PhysicsMaterial.frictionCombine = PhysicMaterialCombine.Average;
+                        break;
+                    case FrooxEngine.RigidBody.Combine.Minimum:
+                        PhysicsMaterial.frictionCombine = PhysicMaterialCombine.Minimum;
+                        break;
+                    case FrooxEngine.RigidBody.Combine.Mulitply:
+                        PhysicsMaterial.frictionCombine = PhysicMaterialCombine.Multiply;
+                        break;
+                    case FrooxEngine.RigidBody.Combine.Maximum:
+                        PhysicsMaterial.frictionCombine = PhysicMaterialCombine.Maximum;
+                        break;
+                }  
+            }
+
+            if (Owner.BounceCombine.WasChanged)
+            {
+                switch (Owner.BounceCombine.Value)
+                {
+                    case FrooxEngine.RigidBody.Combine.Average:
+                        PhysicsMaterial.bounceCombine = PhysicMaterialCombine.Average;
+                        break;
+                    case FrooxEngine.RigidBody.Combine.Minimum:
+                        PhysicsMaterial.bounceCombine = PhysicMaterialCombine.Minimum;
+                        break;
+                    case FrooxEngine.RigidBody.Combine.Mulitply:
+                        PhysicsMaterial.bounceCombine = PhysicMaterialCombine.Multiply;
+                        break;
+                    case FrooxEngine.RigidBody.Combine.Maximum:
+                        PhysicsMaterial.bounceCombine = PhysicMaterialCombine.Maximum;
+                        break;
+                }
+            }
         }
 
         public void OnStop()
@@ -171,16 +229,23 @@ namespace NEOSPlus
 
         private void OnScaleChange(float3 value)
         {
-            go.transform.localScale = value.ToUnity();
+            Gameobject.transform.localScale = value.ToUnity();
         }
 
         public override void Destroy(bool destroyingWorld)
         {
             if (!destroyingWorld && (bool) RigidBody)
             {
-                Object.Destroy(RigidBody);
+                Object.Destroy(RigidBody); 
             }
+            
+            if (!destroyingWorld && (bool) PhysicsMaterial)
+            {
+                Object.Destroy(PhysicsMaterial);
+            }
+
             RigidBody = null;
+            PhysicsMaterial = null;
             base.Destroy(destroyingWorld);
         }
 
@@ -229,6 +294,8 @@ namespace NEOSPlus
                 Owner.IntertiaTensorRotation.Value = RigidBody.inertiaTensorRotation.ToNeos();
                 Owner.LocalCenterOfMass.Value = RigidBody.centerOfMass.ToNeos();
                 Owner.GlobalCenterOfMass.Value = RigidBody.worldCenterOfMass.ToNeos();
+                Owner.SleepStatus.Value = RigidBody.IsSleeping() ?
+                    FrooxEngine.RigidBody.SleepState.Asleep : FrooxEngine.RigidBody.SleepState.Awake;
             }
         }
     }

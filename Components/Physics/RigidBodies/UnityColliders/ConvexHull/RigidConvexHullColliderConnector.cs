@@ -11,7 +11,8 @@ namespace NEOSPlus
 
         public override void SetupCollider()
         {
-            MeshCollider = go.AddComponent<UnityEngine.MeshCollider>();
+            MeshCollider = Gameobject.AddComponent<UnityEngine.MeshCollider>();
+            MeshCollider.material = PhysicsMaterial;
         }
 
         public override void Initialize()
