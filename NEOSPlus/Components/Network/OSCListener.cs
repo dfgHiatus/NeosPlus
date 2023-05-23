@@ -7,12 +7,11 @@ using Rug.Osc;
 namespace FrooxEngine
 {
     [Category("Network")]
-    public class OSCSender : Component
+    public class OSCListener : Component
     {
         public readonly Sync<string> IP;
         public readonly Sync<int> Port;
         public readonly Sync<string> Address;
-        public readonly Sync<string> Message;
         public readonly UserRef HandlingUser;
         public readonly Sync<string> AccessReason;
         public readonly Sync<float> ConnectRetryInterval;
@@ -20,33 +19,16 @@ namespace FrooxEngine
 
         private string _currentIP;
         private int _currentPort;
-        private OscSender _sender;
+        private OscListener _sender;
 
-        public event Action<OSCSender> Connected;
-        public event Action<OSCSender, string> OnMessageSent;
-        public event Action<OSCSender> Closed;
+        public event Action<OSCListener> Connected;
+        public event Action<OSCListener, string> OnMessage;
+        public event Action<OSCListener> Closed;
 
         protected override void OnAwake()
         {
             base.OnAwake();
             ConnectRetryInterval.Value = 10f;
-        }
-
-        public Task<bool> Send(string data)
-        {
-            if (_sender == null || data.Length == 0)
-            {
-                return Task.FromResult(result: false);
-            }
-            TaskCompletionSource<bool> completionSource = new TaskCompletionSource<bool>();
-            Task.Run(delegate
-            {
-                var msg = new OscMessage(Address.Value, Message.Value);
-                _sender.Send(msg);
-                OnMessageSent?.Invoke(this, Message.Value);
-                completionSource.SetResult(true);
-            });
-            return completionSource.Task;
         }
 
         protected override void OnChanges()
@@ -84,10 +66,16 @@ namespace FrooxEngine
 
             if (await Engine.Security.RequestAccessPermission(IP.Value, Port.Value, AccessReason.Value ?? "OSC Sender") == HostAccessPermission.Allowed && !IsRemoved)
             {
-                _sender = new OscSender(parsedIP, Port.Value);
+                _sender = new OscListener(parsedIP, Port.Value);
                 _sender.Connect();
+                _sender.Attach(Address.Value, OnOSCMessage);
                 Connected?.Invoke(this);
             }
+        }
+
+        private void OnOSCMessage(OscMessage message)
+        {
+            OnMessage?.Invoke(this, message[0].ToString());
         }
 
         public async Task RetryConnection()
@@ -97,14 +85,9 @@ namespace FrooxEngine
                 return;
             }
             await DelaySeconds(ConnectRetryInterval);
-            await default(ToBackground);
-            if (!(_sender?.State == OscSocketState.Connected)) // TESTME
+            if (_sender == null)
             {
-                await default(ToWorld);
-                if (_sender == null)
-                {
-                    MarkChangeDirty();
-                }
+                MarkChangeDirty();
             }
         }
 
@@ -120,6 +103,7 @@ namespace FrooxEngine
             {
                 try
                 {
+                    _sender.Detach(Address.Value, OnOSCMessage);
                     _sender.Close();
                     _sender = null;
                     Closed?.Invoke(this);
